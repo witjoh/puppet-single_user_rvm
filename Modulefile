@@ -1,5 +1,5 @@
 name    'eirc-single_user_rvm'
-version '0.3.0'
+version '0.4.0'
 source 'UNKNOWN'
 author 'eirc'
 license 'Apache License, Version 2.0'

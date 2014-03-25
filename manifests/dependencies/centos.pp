@@ -10,7 +10,6 @@ class single_user_rvm::dependencies::centos inherits single_user_rvm{
 
   if ! defined(Package['curl']) { package { 'curl': ensure => present } }
   if ! defined(Package['git']) { package { 'git': ensure => present } }
-  if ! defined(Package['wget']) { package { 'wget': ensure => present } }
   # RVM dependencies
   if ! defined(Package['bash'])            { package { 'bash':            ensure => present } }
   if ! defined(Package['curl'])            { package { 'curl':            ensure => present } }
@@ -31,7 +30,6 @@ class single_user_rvm::dependencies::centos inherits single_user_rvm{
   if ! defined(Package['readline-devel']) { package { 'readline-devel': ensure => present } }
   if ! defined(Package['zlib']) { package { 'zlib': ensure => present } }
   if ! defined(Package['zlib-devel']) { package { 'zlib-devel': ensure => present } }
-#  if ! defined(Package['libyaml-devel']) { package { 'libyaml-devel': ensure => present } }
   if ! defined(Package['libffi-devel']) { package { 'libffi-devel': ensure => present } }
   if ! defined(Package['openssl-devel']) { package { 'openssl-devel': ensure => present } }
   if ! defined(Package['autoconf']) { package { 'autoconf': ensure => present } }

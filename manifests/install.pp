@@ -33,6 +33,9 @@
 #   makes no sense combined with a static version (like 1.22.0 for example) as there will never be something new to
 #   fetch. Defaults to false.
 #
+# [*proxy*]
+#   Set if you require a HTTP proxy to install RVM.  For example `proxy.localnet:8080`.
+#
 # === Examples
 #
 # Plain simple installation for user 'dude'
@@ -72,11 +75,18 @@
 #     home  => '/path/to/special/home',
 #   }
 #
+# Use an HTTP proxy to install rvm.
+#
+#   single_user_rvm::install { 'dude':
+#     proxy => "proxy.localnet:8080"
+#   }
+#
 define single_user_rvm::install (
   $user         = $title,
   $version      = 'stable',
   $rvmrc        = '',
   $home         = '',
+  $proxy        = '',
   $auto_upgrade = false,
 ) {
 
@@ -88,7 +98,8 @@ define single_user_rvm::install (
 
   require single_user_rvm::dependencies
 
-  $install_command = "su -c 'curl -L https://get.rvm.io | bash -s ${version}' - ${user}"
+  if $proxy { $proxy_opt = "export https_proxy=\"http://${proxy}\" &&" }
+  $install_command = "su -c '${proxy_opt} curl -L https://get.rvm.io | bash -s ${version}' - ${user}"
 
   exec { $install_command:
     path    => '/usr/bin:/usr/sbin:/bin',
@@ -97,7 +108,7 @@ define single_user_rvm::install (
   }
 
   $rvm_executable = "${homedir}/.rvm/bin/rvm"
-  $upgrade_command = "su -c '${rvm_executable} get ${version}' - ${user}"
+  $upgrade_command = "su -c '${proxy_opt} ${rvm_executable} get ${version}' - ${user}"
 
   if $auto_upgrade {
 

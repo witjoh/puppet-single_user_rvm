@@ -91,9 +91,11 @@ define single_user_rvm::install (
   $install_command = "curl -L https://get.rvm.io | bash -s ${version}"
   
   exec { $import_key:
-    path   => '/usr/bin:/usr/sbin:/bin:/sbin',
-    user   => "${user}",
-    onlyif => "test `gpg --list-keys | grep 'RVM signing' | wc -l` -eq 0",
+    path        => '/usr/bin:/usr/sbin:/bin:/sbin',
+    user        => "${user}",
+    onlyif      => "test `gpg --list-keys | grep 'RVM signing' | wc -l` -eq 0",
+    cwd         => $homedir,
+    environment => "HOME=${homedir}",
   }
   exec { $install_command:
     path        => '/usr/bin:/usr/sbin:/bin',

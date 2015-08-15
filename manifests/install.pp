@@ -100,6 +100,7 @@ define single_user_rvm::install (
     creates => "${homedir}/.rvm/bin/rvm",
     require => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key] ],
     user    => "${user}",
+    cwd     => $home,
   }
 
   $rvm_executable = "${homedir}/.rvm/bin/rvm"

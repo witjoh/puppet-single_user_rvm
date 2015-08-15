@@ -100,18 +100,21 @@ define single_user_rvm::install (
     creates     => "${homedir}/.rvm/bin/rvm",
     require     => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key] ],
     user        => "${user}",
-    cwd         => $home,
+    cwd         => $homedir,
     environment => "HOME=${homedir}"
   }
 
   $rvm_executable = "${homedir}/.rvm/bin/rvm"
-  $upgrade_command = "su -c '${rvm_executable} get ${version}' - ${user}"
+  $upgrade_command = "${rvm_executable} get ${version}"
 
   if $auto_upgrade {
 
     exec { $upgrade_command:
-      path    => '/usr/bin:/usr/sbin:/bin',
-      require => Exec[$install_command],
+      path        => '/usr/bin:/usr/sbin:/bin',
+      require     => Exec[$install_command],
+      user        => "${user}",
+      cwd         => $homedir,
+      environment => "HOME=${homedir}",
     }
 
   } else {

@@ -96,11 +96,12 @@ define single_user_rvm::install (
     onlyif => "test `gpg --list-keys | grep 'RVM signing' | wc -l` -eq 0",
   }
   exec { $install_command:
-    path    => '/usr/bin:/usr/sbin:/bin',
-    creates => "${homedir}/.rvm/bin/rvm",
-    require => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key] ],
-    user    => "${user}",
-    cwd     => $home,
+    path        => '/usr/bin:/usr/sbin:/bin',
+    creates     => "${homedir}/.rvm/bin/rvm",
+    require     => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key] ],
+    user        => "${user}",
+    cwd         => $home,
+    environment => "HOME=${homedir}"
   }
 
   $rvm_executable = "${homedir}/.rvm/bin/rvm"

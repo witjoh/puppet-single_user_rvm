@@ -77,7 +77,7 @@ define single_user_rvm::install (
   $version      = 'stable',
   $rvmrc        = '',
   $home         = '',
-  $auto_upgrade = false,
+  #  $auto_upgrade = false,
 ) {
 
   if $home {
@@ -107,36 +107,36 @@ define single_user_rvm::install (
   }
 
   $rvm_executable = "${homedir}/.rvm/bin/rvm"
-  $upgrade_command = "${rvm_executable} get ${version}"
+  #  $upgrade_command = "${rvm_executable} get ${version}"
 
-  if $auto_upgrade {
-
-    exec { $upgrade_command:
-      path        => '/usr/bin:/usr/sbin:/bin',
-      require     => Exec[$install_command],
-      user        => "${user}",
-      cwd         => $homedir,
-      environment => "HOME=${homedir}",
-    }
-
-  } else {
-
-    if $version == 'head' {
-      $version_check = ' (master) '
-    } elsif $version =~ /^\d+\.\d+\.\d+/ {
-      $version_check = " ${version} (version) "
-    } else {
-      $version_check = " (${version}) "
-    }
-
-    $version_check_command = "su -c '${rvm_executable} version | grep \"${version_check}\"' - ${user}"
-
-    exec { $upgrade_command:
-      path    => '/usr/bin:/usr/sbin:/bin',
-      unless  => $version_check_command,
-      require => Exec[$install_command],
-    }
-  }
+#  if $auto_upgrade {
+#
+#    exec { $upgrade_command:
+#      path        => '/usr/bin:/usr/sbin:/bin',
+#      require     => Exec[$install_command],
+#      user        => "${user}",
+#      cwd         => $homedir,
+#      environment => "HOME=${homedir}",
+#    }
+#
+#  } else {
+#
+#    if $version == 'head' {
+#      $version_check = ' (master) '
+#    } elsif $version =~ /^\d+\.\d+\.\d+/ {
+#      $version_check = " ${version} (version) "
+#    } else {
+#      $version_check = " (${version}) "
+#    }
+#
+#    $version_check_command = "su -c '${rvm_executable} version | grep \"${version_check}\"' - ${user}"
+#
+#    exec { $upgrade_command:
+#      path    => '/usr/bin:/usr/sbin:/bin',
+#      unless  => $version_check_command,
+#      require => Exec[$install_command],
+#    }
+#  }
 
   if $rvmrc {
     file { "${homedir}/.rvmrc":

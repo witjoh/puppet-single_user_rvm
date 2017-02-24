@@ -82,7 +82,7 @@ define single_user_rvm::install_ruby (
   $force_binary     = false,
   $disable_binary   = false,
   $movable          = false,
-  $home     = '',
+  $home             = false,
 ) {
 
   if $home {

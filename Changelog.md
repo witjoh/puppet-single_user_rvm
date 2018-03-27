@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+* Added dependencies support for CentOS
+
 ## 0.3.0
 
 * Enforce configured RVM version and.

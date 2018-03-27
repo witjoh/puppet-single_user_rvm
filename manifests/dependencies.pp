@@ -8,8 +8,8 @@
 #
 class single_user_rvm::dependencies {
   case $::operatingsystem {
-    CentOS,RedHat,Fedora:  { require single_user_rvm::dependencies::centos }
-	Ubuntu,Debian:  { require single_user_rvm::dependencies::ubuntu }
+    'CentOS','RedHat','Fedora':  { require single_user_rvm::dependencies::centos }
+    'Ubuntu','Debian':  { require single_user_rvm::dependencies::ubuntu }
     default: {}
   }
 }

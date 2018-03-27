@@ -37,5 +37,5 @@ class single_user_rvm::dependencies::centos inherits single_user_rvm{
   if ! defined(Package['libtool']) { package { 'libtool': ensure => present } }
   if ! defined(Package['bison']) { package { 'bison': ensure => present } }
   if ! defined(Package['glibc']) { package { 'glibc': ensure => present } }
-  if ! defined(Package['java-1.7.0-openjdk']) { package { 'java-1.7.0-openjdk': ensure => present } }
+  if ! defined(Package['java-1.8.0-openjdk']) { package { 'java-1.8.0-openjdk': ensure => present } }
 }

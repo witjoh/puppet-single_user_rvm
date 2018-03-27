@@ -67,12 +67,22 @@
 # [*home*]
 #   Set to home directory of user. Defaults to /home/${user}.
 #
+# [*proxy*]
+#   Set to use a HTTP proxy.  For example: '10.10.10.17:8080'.  Defaults to no proxy.
+#
 # === Examples
 #
 # Install Ruby 2.0.0 p247 for user 'dude':
 #
 #   single_user_rvm::install_ruby { 'ruby-2.0.0-p247':
 #     user => 'dude',
+#   }
+#
+# Install Ruby 2.1.2 for user 'dude', via a HTTP proxy:
+#   
+#   single_user_rvm::install_ruby { 'ruby-2.1.2':
+#     user => 'dude',
+#     proxy => 'proxy.localnet:8080'
 #   }
 #
 define single_user_rvm::install_ruby (
@@ -83,6 +93,7 @@ define single_user_rvm::install_ruby (
   $disable_binary   = false,
   $movable          = false,
   $home             = false,
+  $proxy            = undef,
 ) {
 
   if $home {
@@ -91,12 +102,37 @@ define single_user_rvm::install_ruby (
     $homedir = "/home/${user}"
   }
 
-  if $force_binary     { $binary_opt           = '--binary' }
-  if $disable_binary   { $disable_binary_opt   = '--disable-binary' }
-  if $movable          { $movable_opt          = '--movable' }
-  if $verify_downloads { $verify_downloads_opt = "--verify-downloads ${verify_downloads}" }
+  if $force_binary {
+    $binary_opt = '--binary' 
+  } else { 
+    $binary_opt = '' 
+  }
 
-  $command = "${homedir}/.rvm/bin/rvm install ${ruby_string} ${binary_opt} ${disable_binary_opt} ${movable_opt} ${verify_downloads_opt}"
+  if $disable_binary {
+    $disable_binary_opt = '--disable-binary'
+  } else {
+    $disable_binary_opt = ''
+  }
+
+  if $movable {
+    $movable_opt = '--movable'
+  } else {
+    $movable_opt = ''
+  }
+
+  if $verify_downloads {
+    $verify_downloads_opt = "--verify-downloads ${verify_downloads}"
+  } else {
+    $verify_downloads_opt = ''
+  }
+
+  if $proxy {
+    $proxy_opt = "--proxy ${proxy}"
+  } else {
+    $proxy_opt = ''
+  }
+
+  $command = "${homedir}/.rvm/bin/rvm ${proxy_opt} install ${ruby_string} ${binary_opt} ${disable_binary_opt} ${movable_opt} ${verify_downloads_opt}"
 
   exec { "su -c '${command}' - ${user}":
     path    => '/usr/bin:/usr/sbin:/bin',

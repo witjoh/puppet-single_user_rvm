@@ -10,6 +10,7 @@
 #
 # [*user*]
 #   The user for which RVM will be installed. Defaults to the value of the title string.
+#   IMPORTANT:  The user is not managed by this module, but should exist on the system.
 #
 # [*version*]
 #   Version of RVM to install. This version *will* be enforced. That is, the current RVM version will be tested against
@@ -84,8 +85,8 @@
 define single_user_rvm::install (
   $user         = $title,
   $version      = 'stable',
-  $rvmrc        = false,
-  $home         = false,
+  $rvmrc        = undef,
+  $home         = undef,
   $proxy        = undef,
   $auto_upgrade = false,
 ) {
@@ -102,7 +103,7 @@ define single_user_rvm::install (
   {
     $proxy_opt = "export https_proxy=\"http://${proxy}\" &&"
   } else {
-    $proxy_opt = undef
+    $proxy_opt = ''
   }
 
   $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -")
@@ -118,20 +119,23 @@ define single_user_rvm::install (
   exec { $install_command:
     path        => '/usr/bin:/usr/sbin:/bin',
     creates     => "${homedir}/.rvm/bin/rvm",
-    require     => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key] ],
     user        => "${user}",
     cwd         => $homedir,
-    environment => "HOME=${homedir}"
+    environment => "HOME=${homedir}",
+    require     => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key] ],
   }
 
   $rvm_executable = "${homedir}/.rvm/bin/rvm"
-  $upgrade_command = strip("su -c '${proxy_opt} ${rvm_executable} get ${version}' - ${user}")
+  $upgrade_command = strip("${proxy_opt} ${rvm_executable} get ${version}")
 
   if $auto_upgrade {
 
     exec { $upgrade_command:
-      path    => '/usr/bin:/usr/sbin:/bin',
-      require => Exec[$install_command],
+      path        => '/usr/bin:/usr/sbin:/bin',
+      user        => "${user}",
+      cwd         => $homedir,
+      environment => "HOME=${homedir}",
+      require     => Exec[$install_command],
     }
 
   } else {
@@ -144,12 +148,15 @@ define single_user_rvm::install (
       $version_check = " (${version}) "
     }
 
-    $version_check_command = "su -c '${rvm_executable} version | grep \"${version_check}\"' - ${user}"
+    $version_check_command = "${rvm_executable} version | grep \"${version_check}\""
 
     exec { $upgrade_command:
-      path    => '/usr/bin:/usr/sbin:/bin',
-      unless  => $version_check_command,
-      require => Exec[$install_command],
+      path        => '/usr/bin:/usr/sbin:/bin',
+      unless      => $version_check_command,
+      user        => "${user}",
+      cwd         => $homedir,
+      environment => "HOME=${homedir}",
+      require     => Exec[$install_command],
     }
   }
 
@@ -158,8 +165,6 @@ define single_user_rvm::install (
       ensure  => present,
       owner   => $user,
       content => $rvmrc,
-      require => User[$user],
     }
   }
-
 }

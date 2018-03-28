@@ -79,7 +79,7 @@
 #   }
 #
 # Install Ruby 2.1.2 for user 'dude', via a HTTP proxy:
-#   
+#
 #   single_user_rvm::install_ruby { 'ruby-2.1.2':
 #     user => 'dude',
 #     proxy => 'proxy.localnet:8080'
@@ -88,11 +88,11 @@
 define single_user_rvm::install_ruby (
   $ruby_string      = $title,
   $user             = 'rvm',
-  $verify_downloads = false,
-  $force_binary     = false,
-  $disable_binary   = false,
-  $movable          = false,
-  $home             = false,
+  $verify_downloads = undef,
+  $force_binary     = undef,
+  $disable_binary   = undef,
+  $movable          = undef,
+  $home             = undef,
   $proxy            = undef,
 ) {
 
@@ -103,9 +103,9 @@ define single_user_rvm::install_ruby (
   }
 
   if $force_binary {
-    $binary_opt = '--binary' 
-  } else { 
-    $binary_opt = '' 
+    $binary_opt = '--binary'
+  } else {
+    $binary_opt = ''
   }
 
   if $disable_binary {

@@ -53,7 +53,7 @@
 #
 # [*verify_downloads*]
 #   Set to a value that will be added to the --verify-downloads flag. If empty the whole flag will not be added. More
-#   info on the flag function in doc above. Defaults to false.
+#   info on the flag function in doc above. Defaults to undef.
 #
 # [*force_binary*]
 #   Set to true enable the --binary flag. More info on the flag function in doc above. Defaults to false.
@@ -89,9 +89,9 @@ define single_user_rvm::install_ruby (
   $ruby_string      = $title,
   $user             = 'rvm',
   $verify_downloads = undef,
-  $force_binary     = undef,
-  $disable_binary   = undef,
-  $movable          = undef,
+  $force_binary     = false,
+  $disable_binary   = false,
+  $movable          = false,
   $home             = undef,
   $proxy            = undef,
 ) {
@@ -142,5 +142,4 @@ define single_user_rvm::install_ruby (
     cwd         => $homedir,
     environment => "HOME=${homedir}",
   }
-
 }

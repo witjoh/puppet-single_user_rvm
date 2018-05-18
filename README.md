@@ -11,6 +11,8 @@ Install RVM
 
 More info in [install.pp](manifests/install.pp)
 
+The user should exists on the system, but is not managed by this module.
+
 Install a couple of Rubies
 --------------------------
 

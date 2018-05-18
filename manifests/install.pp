@@ -97,7 +97,7 @@ define single_user_rvm::install (
     $homedir = "/home/${user}"
   }
 
-  require single_user_rvm::dependencies
+  require ::single_user_rvm::dependencies
 
   if $proxy
   {
@@ -111,7 +111,7 @@ define single_user_rvm::install (
 
   exec { $import_key:
     path        => '/usr/bin:/usr/sbin:/bin:/sbin',
-    user        => "${user}",
+    user        => $user,
     onlyif      => "test `gpg --list-keys | grep 'RVM signing' | wc -l` -eq 0",
     cwd         => $homedir,
     environment => "HOME=${homedir}",
@@ -119,7 +119,7 @@ define single_user_rvm::install (
   exec { $install_command:
     path        => '/usr/bin:/usr/sbin:/bin',
     creates     => "${homedir}/.rvm/bin/rvm",
-    user        => "${user}",
+    user        => $user,
     cwd         => $homedir,
     environment => "HOME=${homedir}",
     require     => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key] ],
@@ -132,7 +132,7 @@ define single_user_rvm::install (
 
     exec { $upgrade_command:
       path        => '/usr/bin:/usr/sbin:/bin',
-      user        => "${user}",
+      user        => $user,
       cwd         => $homedir,
       environment => "HOME=${homedir}",
       require     => Exec[$install_command],
@@ -153,7 +153,7 @@ define single_user_rvm::install (
     exec { $upgrade_command:
       path        => '/usr/bin:/usr/sbin:/bin',
       unless      => $version_check_command,
-      user        => "${user}",
+      user        => $user,
       cwd         => $homedir,
       environment => "HOME=${homedir}",
       require     => Exec[$install_command],

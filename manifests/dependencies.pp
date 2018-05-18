@@ -70,5 +70,8 @@ class single_user_rvm::dependencies {
       if ! defined(Package['bison'])          { package { 'bison':          ensure => present } }
       if ! defined(Package['libffi-devel'])   { package { 'libffi-devel':   ensure => present } }
     }
+    default: {
+      fail("Your osfamily (${::osfamily}) is not supported. PR are welcome")
+    }
   }
 }

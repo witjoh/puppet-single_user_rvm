@@ -1,0 +1,16 @@
+HOSTS:
+  centos-7.4-x64:
+    platform: el-7-x86_64
+    role:
+      - agent
+    hypervisor: docker
+    image: localhost:5000/centos-7.4-x86_64-nocm:1.0
+    docker_preserve_image: false
+    docker_cmd: '["/usr/sbin/init"]'
+    # install various tools required to get the image up to usable levels
+    docker_image_commands:
+      - 'yum install -y crontabs tar wget openssl sysvinit-tools iproute which initscripts'
+CONFIG:
+  type: foss
+  trace_limit: 200
+  masterless: true

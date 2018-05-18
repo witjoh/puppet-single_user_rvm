@@ -1,0 +1,4 @@
+# Mostly used when modules caontains explicit hiera calls
+# Put your keys in this file
+---
+some_exzmple_key: "some_example_value"

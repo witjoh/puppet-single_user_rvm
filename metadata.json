@@ -1,0 +1,14 @@
+{
+  "name": "witjoh-single_user_rvm",
+  "version": "0.5.0",
+  "author": "Johan De Wit <johan@koewacht.net>",
+  "summary": "Install and manage RVM and Ruby installations in Single-User mode.",
+  "license": "Apache-2.0",
+  "source": "https://github.com/witjoh/puppet-single_user_rvm",
+  "project_page": "https://github.com/witjoh/puppet-single_user_rvm",
+  "issues_url": "https://github.com/witjoh/puppet-single_user_rvm",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.11.0"}
+  ],
+  "data_provider": null
+}

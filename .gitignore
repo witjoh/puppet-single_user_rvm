@@ -3,3 +3,5 @@ pkg/
 *.swp
 junit
 vendor
+spec/fixtures
+

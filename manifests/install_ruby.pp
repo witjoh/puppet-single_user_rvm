@@ -141,5 +141,6 @@ define single_user_rvm::install_ruby (
     require     => Single_user_rvm::Install[$user],
     cwd         => $homedir,
     environment => "HOME=${homedir}",
+    user        => $user,
   }
 }

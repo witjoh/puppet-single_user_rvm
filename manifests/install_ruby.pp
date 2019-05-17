@@ -70,6 +70,8 @@
 # [*proxy*]
 #   Set to use a HTTP proxy.  For example: '10.10.10.17:8080'.  Defaults to no proxy.
 #
+# [*path*]
+#   Set to override the default path commands are executed in, '/usr/bin:/usr/sbin:/bin:/sbin'.
 # === Examples
 #
 # Install Ruby 2.0.0 p247 for user 'dude':

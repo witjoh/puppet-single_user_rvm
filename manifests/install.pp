@@ -37,6 +37,9 @@
 # [*proxy*]
 #   Set if you require a HTTP proxy to install RVM.  For example `proxy.localnet:8080`.
 #
+# [*path*]
+#   Set if you need to override the default path commands are executed in, '/usr/bin:/usr/sbin:/bin:/sbin'.
+#
 # === Examples
 #
 # Plain simple installation for user 'dude'

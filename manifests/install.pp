@@ -106,7 +106,11 @@ define single_user_rvm::install (
     $proxy_opt = ''
   }
 
-  $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -")
+  if $::osfamily == 'Darwin' {
+    $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | gpg --import -")
+  } else {
+    $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -")
+  }
   $install_command = strip("${proxy_opt} curl -L https://get.rvm.io | bash -s ${version}")
 
   exec { $import_key:

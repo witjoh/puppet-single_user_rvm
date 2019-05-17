@@ -94,7 +94,14 @@ define single_user_rvm::install_ruby (
   $movable          = false,
   $home             = undef,
   $proxy            = undef,
+  $path             = undef
 ) {
+
+  if $path {
+    $pathstr = $path
+  } else {
+    $pathstr = '/usr/bin:/usr/sbin:/bin:/sbin'
+  }
 
   if $home {
     $homedir = $home
@@ -135,7 +142,7 @@ define single_user_rvm::install_ruby (
   $command = "${homedir}/.rvm/bin/rvm ${proxy_opt} install ${ruby_string} ${binary_opt} ${disable_binary_opt} ${movable_opt} ${verify_downloads_opt}"
 
   exec { $command:
-    path        => '/usr/bin:/usr/sbin:/bin',
+    path        => $pathstr,
     creates     => "${homedir}/.rvm/rubies/${ruby_string}/bin/ruby",
     timeout     => 3600, # takes too long... lets give it some time
     require     => Single_user_rvm::Install[$user],

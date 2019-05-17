@@ -89,12 +89,19 @@ define single_user_rvm::install (
   $home         = undef,
   $proxy        = undef,
   $auto_upgrade = false,
+  $path		= undef
 ) {
 
   if $home {
     $homedir = $home
   } else {
     $homedir = "/home/${user}"
+  }
+
+  if $path {
+    $pathstr = $path
+  } else {
+    $pathstr = '/usr/bin:/usr/sbin:/bin:/sbin'
   }
 
   require ::single_user_rvm::dependencies
@@ -114,14 +121,14 @@ define single_user_rvm::install (
   $install_command = strip("${proxy_opt} curl -L https://get.rvm.io | bash -s ${version}")
 
   exec { $import_key:
-    path        => '/usr/bin:/usr/sbin:/bin:/sbin',
+    path        => $pathstr,
     user        => $user,
     onlyif      => "test `gpg --list-keys | grep 'RVM signing' | wc -l` -eq 0",
     cwd         => $homedir,
     environment => "HOME=${homedir}",
   }
   exec { $install_command:
-    path        => '/usr/bin:/usr/sbin:/bin',
+    path        => $pathstr,
     creates     => "${homedir}/.rvm/bin/rvm",
     user        => $user,
     cwd         => $homedir,
@@ -135,7 +142,7 @@ define single_user_rvm::install (
   if $auto_upgrade {
 
     exec { $upgrade_command:
-      path        => '/usr/bin:/usr/sbin:/bin',
+      path        => $pathstr,
       user        => $user,
       cwd         => $homedir,
       environment => "HOME=${homedir}",
@@ -155,7 +162,7 @@ define single_user_rvm::install (
     $version_check_command = "${rvm_executable} version | grep \"${version_check}\""
 
     exec { $upgrade_command:
-      path        => '/usr/bin:/usr/sbin:/bin',
+      path        => $pathstr,
       unless      => $version_check_command,
       user        => $user,
       cwd         => $homedir,

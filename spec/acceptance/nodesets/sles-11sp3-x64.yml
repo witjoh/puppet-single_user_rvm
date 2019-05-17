@@ -1,0 +1,15 @@
+HOSTS:
+  sles-11sp3-x64:
+    platform: sles-11-x86_64
+    roles:
+      - agent
+    hypervisor: docker
+    image: localhost:5000/sles-11-sp3-x86_64:latest
+    docker_preserve_image: false
+    docker_cmd: '["/usr/sbin/init"]'
+    # install various tools required to get the image up to usable levels
+    docker_image_commands:
+      - 'zypper install -y crontabs tar wget openssl sysvinit-tools iproute which initscripts'
+CONFIG:
+  log_level: debug
+  type: foss

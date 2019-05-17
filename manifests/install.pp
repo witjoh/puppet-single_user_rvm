@@ -86,7 +86,11 @@ define single_user_rvm::install (
     $homedir = "/home/${user}"
   }
 
-  require single_user_rvm::dependencies
+  if $::operatingsystem == 'Darwin' {
+    require single_user_rvm::dependencies_osx
+  } else {
+    require single_user_rvm::dependencies
+  }
 
   $install_command = "su -c 'curl -L https://get.rvm.io | bash -s ${version}' - ${user}"
 

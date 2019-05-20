@@ -117,19 +117,30 @@ define single_user_rvm::install (
   }
 
   if $::osfamily == 'Darwin' {
-    $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | gpg --import -")
+    $gpg_cmd = 'gpg'
   } else {
-    $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -")
+    $gpg_cmd = 'gpg2'
   }
-  $install_command = strip("${proxy_opt} curl -L https://get.rvm.io | bash -s ${version}")
 
+  $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | $gpg_cmd --import -")
   exec { $import_key:
     path        => $pathstr,
     user        => $user,
-    onlyif      => "test `gpg --list-keys | grep 'RVM signing' | wc -l` -eq 0",
+    onlyif      => "test `gpg --list-keys | grep '409B6B1796C275462A1703113804BB82D39DC0E3' | wc -l` -eq 0",
     cwd         => $homedir,
     environment => "HOME=${homedir}",
   }
+
+  $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/pkuczynski.asc | $gpg_cmd --import -")
+  exec { $import_key:
+    path        => $pathstr,
+    user        => $user,
+    onlyif      => "test `gpg --list-keys | grep '7D2BAF1CF37B13E2069D6956105BD0E739499BDB' | wc -l` -eq 0",
+    cwd         => $homedir,
+    environment => "HOME=${homedir}",
+  }
+
+  $install_command = strip("${proxy_opt} curl -L https://get.rvm.io | bash -s ${version}")
   exec { $install_command:
     path        => $pathstr,
     creates     => "${homedir}/.rvm/bin/rvm",

@@ -78,6 +78,7 @@ class single_user_rvm::dependencies {
       if ! defined(Package['gawk'])            { package { 'gawk':            ensure => present } }
 
       # Generic Ruby dependencies
+      if ! defined(Package['gpg'])             { package { 'gpg':              ensure => present } }
       if ! defined(Package['gcc'])             { package { 'gcc':              ensure => present } }
       if ! defined(Package['gpatch'])          { package { 'gpatch':           ensure => present } }
       if ! defined(Package['make'])            { package { 'make':             ensure => present } }

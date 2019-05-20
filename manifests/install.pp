@@ -122,8 +122,8 @@ define single_user_rvm::install (
     $gpg_cmd = 'gpg2'
   }
 
-  $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | $gpg_cmd --import -")
-  exec { $import_key:
+  $import_key_1 = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | $gpg_cmd --import -")
+  exec { $import_key_1:
     path        => $pathstr,
     user        => $user,
     onlyif      => "test `gpg --list-keys | grep '409B6B1796C275462A1703113804BB82D39DC0E3' | wc -l` -eq 0",
@@ -131,8 +131,8 @@ define single_user_rvm::install (
     environment => "HOME=${homedir}",
   }
 
-  $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/pkuczynski.asc | $gpg_cmd --import -")
-  exec { $import_key:
+  $import_key_2 = strip("${proxy_opt} curl -sSL https://rvm.io/pkuczynski.asc | $gpg_cmd --import -")
+  exec { $import_key_2:
     path        => $pathstr,
     user        => $user,
     onlyif      => "test `gpg --list-keys | grep '7D2BAF1CF37B13E2069D6956105BD0E739499BDB' | wc -l` -eq 0",
@@ -147,7 +147,7 @@ define single_user_rvm::install (
     user        => $user,
     cwd         => $homedir,
     environment => "HOME=${homedir}",
-    require     => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key] ],
+    require     => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key_1], Exec [$import_key_2] ],
   }
 
   $rvm_executable = "${homedir}/.rvm/bin/rvm"

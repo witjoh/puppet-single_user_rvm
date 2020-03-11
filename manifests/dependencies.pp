@@ -70,6 +70,32 @@ class single_user_rvm::dependencies {
       if ! defined(Package['bison'])          { package { 'bison':          ensure => present } }
       if ! defined(Package['libffi-devel'])   { package { 'libffi-devel':   ensure => present } }
     }
+    'Darwin': {
+      # RVM dependencies
+      if ! defined(Package['bash'])            { package { 'bash':            ensure => present } }
+      if ! defined(Package['curl'])            { package { 'curl':            ensure => present } }
+      if ! defined(Package['bzip2'])           { package { 'bzip2':           ensure => present } }
+      if ! defined(Package['gawk'])            { package { 'gawk':            ensure => present } }
+
+      # Generic Ruby dependencies
+      if ! defined(Package['gpg'])             { package { 'gpg':              ensure => present } }
+      if ! defined(Package['gcc'])             { package { 'gcc':              ensure => present } }
+      if ! defined(Package['gpatch'])          { package { 'gpatch':           ensure => present } }
+      if ! defined(Package['make'])            { package { 'make':             ensure => present } }
+      if ! defined(Package['openssl'])         { package { 'openssl':          ensure => present } }
+      if ! defined(Package['readline'])        { package { 'readline':         ensure => present } }
+      if ! defined(Package['curl'])            { package { 'curl':             ensure => present } }
+      if ! defined(Package['zlib'])            { package { 'zlib':             ensure => present } }
+      if ! defined(Package['libyaml'])         { package { 'libyaml':          ensure => present } }
+      if ! defined(Package['sqlite'])          { package { 'sqlite':           ensure => present } }
+      if ! defined(Package['autoconf'])        { package { 'autoconf':         ensure => present } }
+      if ! defined(Package['ncurses'])         { package { 'ncurses':          ensure => present } }
+      if ! defined(Package['automake'])        { package { 'automake':         ensure => present } }
+      if ! defined(Package['libtool'])         { package { 'libtool':          ensure => present } }
+      if ! defined(Package['bison'])           { package { 'bison':            ensure => present } }
+      if ! defined(Package['pkg-config'])      { package { 'pkg-config':       ensure => present } }
+      if ! defined(Package['libffi'])          { package { 'libffi':           ensure => present } }
+    }
     default: {
       fail("Your osfamily (${::osfamily}) is not supported. PR are welcome")
     }

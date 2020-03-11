@@ -70,6 +70,8 @@
 # [*proxy*]
 #   Set to use a HTTP proxy.  For example: '10.10.10.17:8080'.  Defaults to no proxy.
 #
+# [*path*]
+#   Set to override the default path commands are executed in, '/usr/bin:/usr/sbin:/bin:/sbin'.
 # === Examples
 #
 # Install Ruby 2.0.0 p247 for user 'dude':
@@ -94,7 +96,14 @@ define single_user_rvm::install_ruby (
   $movable          = false,
   $home             = undef,
   $proxy            = undef,
+  $path             = undef
 ) {
+
+  if $path {
+    $pathstr = $path
+  } else {
+    $pathstr = '/usr/bin:/usr/sbin:/bin:/sbin'
+  }
 
   if $home {
     $homedir = $home
@@ -135,7 +144,7 @@ define single_user_rvm::install_ruby (
   $command = "${homedir}/.rvm/bin/rvm ${proxy_opt} install ${ruby_string} ${binary_opt} ${disable_binary_opt} ${movable_opt} ${verify_downloads_opt}"
 
   exec { $command:
-    path        => '/usr/bin:/usr/sbin:/bin',
+    path        => $pathstr,
     creates     => "${homedir}/.rvm/rubies/${ruby_string}/bin/ruby",
     timeout     => 3600, # takes too long... lets give it some time
     require     => Single_user_rvm::Install[$user],

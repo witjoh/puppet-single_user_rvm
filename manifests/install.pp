@@ -117,7 +117,7 @@ define single_user_rvm::install (
   }
 
   if $::osfamily == 'Darwin' {
-    $gpg_cmd = 'gpg'
+    $gpg_cmd = '/usr/local/bin/gpg'
   } else {
     $gpg_cmd = 'gpg2'
   }

@@ -37,6 +37,9 @@
 # [*proxy*]
 #   Set if you require a HTTP proxy to install RVM.  For example `proxy.localnet:8080`.
 #
+# [*path*]
+#   Set if you need to override the default path commands are executed in, '/usr/bin:/usr/sbin:/bin:/sbin'.
+#
 # === Examples
 #
 # Plain simple installation for user 'dude'
@@ -89,12 +92,19 @@ define single_user_rvm::install (
   $home         = undef,
   $proxy        = undef,
   $auto_upgrade = false,
+  $path		= undef
 ) {
 
   if $home {
     $homedir = $home
   } else {
     $homedir = "/home/${user}"
+  }
+
+  if $path {
+    $pathstr = $path
+  } else {
+    $pathstr = '/usr/bin:/usr/sbin:/bin:/sbin'
   }
 
   require ::single_user_rvm::dependencies
@@ -106,23 +116,38 @@ define single_user_rvm::install (
     $proxy_opt = ''
   }
 
-  $import_key = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -")
-  $install_command = strip("${proxy_opt} curl -L https://get.rvm.io | bash -s ${version}")
+  if $::osfamily == 'Darwin' {
+    $gpg_cmd = '/usr/local/bin/gpg'
+  } else {
+    $gpg_cmd = 'gpg2'
+  }
 
-  exec { $import_key:
-    path        => '/usr/bin:/usr/sbin:/bin:/sbin',
+  $import_key_1 = strip("${proxy_opt} curl -sSL https://rvm.io/mpapis.asc | $gpg_cmd --import -")
+  exec { $import_key_1:
+    path        => $pathstr,
     user        => $user,
-    onlyif      => "test `gpg --list-keys | grep 'RVM signing' | wc -l` -eq 0",
+    onlyif      => "test `$gpg_cmd --list-keys | grep '409B6B1796C275462A1703113804BB82D39DC0E3' | wc -l` -eq 0",
     cwd         => $homedir,
     environment => "HOME=${homedir}",
   }
+
+  $import_key_2 = strip("${proxy_opt} curl -sSL https://rvm.io/pkuczynski.asc | $gpg_cmd --import -")
+  exec { $import_key_2:
+    path        => $pathstr,
+    user        => $user,
+    onlyif      => "test `$gpg_cmd --list-keys | grep '7D2BAF1CF37B13E2069D6956105BD0E739499BDB' | wc -l` -eq 0",
+    cwd         => $homedir,
+    environment => "HOME=${homedir}",
+  }
+
+  $install_command = strip("${proxy_opt} curl -L https://get.rvm.io | bash -s ${version}")
   exec { $install_command:
-    path        => '/usr/bin:/usr/sbin:/bin',
+    path        => $pathstr,
     creates     => "${homedir}/.rvm/bin/rvm",
     user        => $user,
     cwd         => $homedir,
     environment => "HOME=${homedir}",
-    require     => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key] ],
+    require     => [ Package['curl'], Package['bash'], User[$user], Exec[$import_key_1], Exec[$import_key_2] ],
   }
 
   $rvm_executable = "${homedir}/.rvm/bin/rvm"
@@ -131,7 +156,7 @@ define single_user_rvm::install (
   if $auto_upgrade {
 
     exec { $upgrade_command:
-      path        => '/usr/bin:/usr/sbin:/bin',
+      path        => $pathstr,
       user        => $user,
       cwd         => $homedir,
       environment => "HOME=${homedir}",
@@ -151,7 +176,7 @@ define single_user_rvm::install (
     $version_check_command = "${rvm_executable} version | grep \"${version_check}\""
 
     exec { $upgrade_command:
-      path        => '/usr/bin:/usr/sbin:/bin',
+      path        => $pathstr,
       unless      => $version_check_command,
       user        => $user,
       cwd         => $homedir,

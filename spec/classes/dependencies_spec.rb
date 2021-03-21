@@ -90,13 +90,7 @@ describe 'single_user_rvm::dependencies' do
       end
 
       it do
-        is_expected.to contain_package('libreadline6').with(
-          ensure: 'present',
-        )
-      end
-
-      it do
-        is_expected.to contain_package('libreadline6-dev').with(
+        is_expected.to contain_package('libreadline-dev').with(
           ensure: 'present',
         )
       end
